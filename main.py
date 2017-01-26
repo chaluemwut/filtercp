@@ -1,4 +1,4 @@
-import pickle, random, time
+import pickle, random, time, logging, sys
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import MultinomialNB
@@ -28,6 +28,18 @@ time_train_text = []
 time_predict_text = []
 
 repeating_time = 10
+
+log = logging.getLogger('main')
+log.setLevel(logging.INFO)
+format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+ch = logging.StreamHandler(sys.stdout)
+ch.setFormatter(format)
+log.addHandler(ch)
+
+fh = logging.FileHandler("main.log")
+fh.setFormatter(format)
+log.addHandler(fh)
 
 def ml_prediction(x_train, x_test, y_train, y_test):
     clf = RandomForestClassifier()
@@ -59,8 +71,13 @@ def ml_word_prediction(x_train, x_test, y_train, y_test):
     start_time = time.time()
     clf.fit(x_train, y_train)
     total_time = time.time() - start_time
+    time_train_ml_word.append(total_time/len(y_train))
 
+    start_time = time.time()
     y_pred = clf.predict(x_test)
+    total_time = time.time() - start_time
+    time_predict_ml_word.append(total_time/len(y_pred))
+
     f1 = f1_score(y_test, y_pred)
     return f1
 
@@ -85,7 +102,7 @@ def topic_detection(x_train, x_test, y_train, y_test):
     f1_lst = []
     start_time = time.time()
     for cosin in cosin_lst:
-        print('****** ', cosin)
+        log.info('****** ', cosin)
         y_pred_lst = []
         for x_inner in x_test_inner:
             test_message = to_message_lst(x_inner)
@@ -167,14 +184,14 @@ def text_mining(x_train, x_test, y_train, y_test):
 def print_all_result(all_result):
     print('********** performance result')
     for ml, ml_word, topic, perf_text in zip(all_result['perf_ml'], all_result['perf_ml_word'], all_result['perf_topic'], all_result['perf_text']):
-        print('{},{},{},{}'.format(ml, ml_word, topic, perf_text))
+        log.info('{},{},{},{}'.format(ml, ml_word, topic, perf_text))
 
     print('********** training time')
     for t_ml, t_ml_word, t_topic, t_text in zip(all_result['time_train_ml'], all_result['time_train_ml_word'], all_result['time_train_topic'], all_result['time_train_text']):
-        print('{},{},{},{}'.format(t_ml, t_ml_word, t_topic, t_text))
+        log.info('{},{},{},{}'.format(t_ml, t_ml_word, t_topic, t_text))
 
     for p_ml, p_ml_word, p_topic, p_text in zip(all_result['time_predict_ml'], all_result['time_predict_ml_word'], all_result['time_predict_topic'], all_result['time_predict_text']):
-        print('{},{},{},{}'.format(p_ml, p_ml_word, p_topic, p_text))
+        log.info('{},{},{},{}'.format(p_ml, p_ml_word, p_topic, p_text))
 
 def main_process():
     mapping_lst = pickle.load(open('data/obj/data4000.obj','rb'))
@@ -200,7 +217,7 @@ def main_process():
         ml_word_lst.append(ml_word_result)
         topic_lst.append(topic_result)
         text_lst.append(text_result)
-        print('[ml : {}, text : {}, ml word : {}, topic : {}]'.format(ml_result, text_result,
+        log.info('[ml : {}, text : {}, ml word : {}, topic : {}]'.format(ml_result, text_result,
                                                                       ml_word_result, topic_result))
 
     all_result = {}
@@ -221,8 +238,13 @@ def main_process():
     all_result['time_train_text'] = time_train_text
     all_result['time_predict_text'] = time_predict_text
 
-    pickle.dump(all_result, open('data/result/result4000_10.obj', 'wb'))
+    pickle.dump(all_result, open('data/result/result400_v2.obj', 'wb'))
 
+    print_all_result(all_result)
 
 if __name__ == '__main__':
+    log.info('***** start ********')
+    start_time = time.time()
     main_process()
+    total_time = time.time() - start_time
+    log.info('total time {}'.format(total_time/3600))
