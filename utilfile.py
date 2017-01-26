@@ -62,11 +62,9 @@ class FileUtil:
     
     @staticmethod    
     def read_file(file_name):
-        f = open(file_name)
-        lines = f.readlines()
         with codecs.open(file_name, 'r', 'utf-8') as file:
-            # return file.readlines()
-            return [str(x) for x in file.readlines()]
+            return file.readlines()
+            # return [str(x) for x in file.readlines()]
         return []
     
     def template_write_file(self, file_name, message, option):
