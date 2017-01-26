@@ -102,7 +102,7 @@ def topic_detection(x_train, x_test, y_train, y_test):
     f1_lst = []
     start_time = time.time()
     for cosin in cosin_lst:
-        log.info('****** ', cosin)
+        log.info('****** {} *******'.format(cosin))
         y_pred_lst = []
         for x_inner in x_test_inner:
             test_message = to_message_lst(x_inner)
@@ -206,6 +206,7 @@ def main_process():
     topic_lst = []
     text_lst = []
     for i in range(0, repeating_time):
+        log.info('****** start loop {} '.format(i))
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=random.randrange(1000))
 
         ml_result = ml_prediction(x_train, x_test, y_train, y_test)
@@ -219,6 +220,7 @@ def main_process():
         text_lst.append(text_result)
         log.info('[ml : {}, text : {}, ml word : {}, topic : {}]'.format(ml_result, text_result,
                                                                       ml_word_result, topic_result))
+        log.info('****** end loop {} '.format(i))
 
     all_result = {}
     all_result['perf_ml'] = ml_lst
