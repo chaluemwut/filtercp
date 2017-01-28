@@ -1,4 +1,4 @@
-import pickle, random, time, logging, sys, json
+import pickle, random, time, logging, sys, json, codecs
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import MultinomialNB
@@ -11,7 +11,6 @@ from nlp import CRFWordSegment
 from utilfile import FileUtil
 from sklearn.metrics import f1_score
 import numpy as np
-import matplotlib.pyplot as plt
 from data_bean import NewDataMapping
 
 dict_list = set([x.replace('\n', '') for x in FileUtil.read_file('data/resource/dict.txt')])
@@ -94,7 +93,7 @@ def text_feature_process(x_train, x_test, y_train, y_test):
 def load_data():
     print('start...')
     nlp = CRFWordSegment()
-    with open('data/db/filterel4000.json') as f:
+    with codecs.open('data/db/filterel4000.json', 'r', encoding='utf8') as f:
         lines = f.readlines()
         data_obj = []
         for data in lines:
@@ -179,8 +178,6 @@ def process():
     all_result['f1_social_lst'] = f1_social_lst
     all_result['f1_social_and_text_lst'] = f1_social_and_text_lst
     pickle.dump(all_result, open('data/newresult/result/all_result.obj', 'wb'))
-
-    plt.boxplot([f1_text_lst, f1_topic_lst, f1_social_lst])
 
 if __name__ == '__main__':
     process()
