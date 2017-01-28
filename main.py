@@ -13,6 +13,8 @@ from nlp import CRFWordSegment
 from sklearn.metrics import f1_score
 import numpy as np
 
+import matplotlib.pyplot as plt
+
 crf = CRFWordSegment()
 
 time_train_ml = []
@@ -151,7 +153,7 @@ def topic_detection(x_train, x_test, y_train, y_test):
     return f1
 
 
-def text_mining(x_train, x_test, y_train, y_test):
+def topic_prediction(x_train, x_test, y_train, y_test):
     x_train_msg = []
     x_test_msg = []
     crf = CRFWordSegment()
@@ -194,7 +196,7 @@ def print_all_result(all_result):
         log.info('{},{},{},{}'.format(p_ml, p_ml_word, p_topic, p_text))
 
 def main_process():
-    mapping_lst = pickle.load(open('data/obj/data4000.obj','rb'))
+    mapping_lst = pickle.load(open('data/data/data4000.data','rb'))
     x = []
     y = []
     for mapping in mapping_lst:
@@ -204,45 +206,54 @@ def main_process():
     ml_lst = []
     ml_word_lst = []
     topic_lst = []
-    text_lst = []
-    for i in range(0, repeating_time):
+    for i in range(0, 10):
         log.info('****** start loop {} '.format(i))
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=random.randrange(1000))
 
         ml_result = ml_prediction(x_train, x_test, y_train, y_test)
         ml_word_result = ml_word_prediction(x_train, x_test, y_train, y_test)
-        topic_result = topic_detection(x_train, x_test, y_train, y_test)
-        text_result = text_mining(x_train, x_test, y_train, y_test)
+        topic_result = topic_prediction(x_train, x_test, y_train, y_test)
 
         ml_lst.append(ml_result)
         ml_word_lst.append(ml_word_result)
         topic_lst.append(topic_result)
-        text_lst.append(text_result)
-        log.info('[ml : {}, text : {}, ml word : {}, topic : {}]'.format(ml_result, text_result,
-                                                                      ml_word_result, topic_result))
-        log.info('****** end loop {} '.format(i))
 
-    all_result = {}
-    all_result['perf_ml'] = ml_lst
-    all_result['perf_ml_word'] = ml_word_lst
-    all_result['perf_topic'] = topic_lst
-    all_result['perf_text'] = text_lst
+        # print(ml_word_result)
+        # topic_lst.append(topic_result)
+        # text_lst.append(text_result)
+        # log.info('[ml : {}, text : {}, ml word : {}, topic : {}]'.format(ml_result, text_result,
+        #                                                               ml_word_result, topic_result))
+        # log.info('****** end loop {} '.format(i))
 
-    all_result['time_train_ml'] = time_train_ml
-    all_result['time_predict_ml'] = time_predict_ml
 
-    all_result['time_train_ml_word'] = time_train_ml_word
-    all_result['time_predict_ml_word'] = time_predict_ml_word
+    plt.boxplot([topic_lst, ml_lst, ml_word_lst])
+    plt.show()
 
-    all_result['time_train_topic'] = time_train_topic
-    all_result['time_predict_topic'] = time_predict_topic
+    print(' >>>> Total : {}'.format(np.array(ml_word_lst)))
+    # str = ','.join(ml_word_lst)
+    print(ml_word_lst)
 
-    all_result['time_train_text'] = time_train_text
-    all_result['time_predict_text'] = time_predict_text
-
-    pickle.dump(all_result, open('data/result/result400_v2.obj', 'wb'))
-
-    print_all_result(all_result)
+    # all_result = {}
+    # all_result['perf_ml'] = ml_lst
+    # all_result['perf_ml_word'] = ml_word_lst
+    # all_result['perf_topic'] = topic_lst
+    # all_result['perf_text'] = text_lst
+    #
+    # all_result['time_train_ml'] = time_train_ml
+    # all_result['time_predict_ml'] = time_predict_ml
+    #
+    # all_result['time_train_ml_word'] = time_train_ml_word
+    # all_result['time_predict_ml_word'] = time_predict_ml_word
+    #
+    # all_result['time_train_topic'] = time_train_topic
+    # all_result['time_predict_topic'] = time_predict_topic
+    #
+    # all_result['time_train_text'] = time_train_text
+    # all_result['time_predict_text'] = time_predict_text
+    #
+    # pickle.dump(all_result, open('data/result/result400_v2.data', 'wb'))
+    #
+    # print_all_result(all_result)
 
 if __name__ == '__main__':
     log.info('***** start ********')

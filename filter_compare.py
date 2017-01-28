@@ -199,7 +199,7 @@ class MainCompare():
             self.log.info('{},{},{},{}'.format(p_ml, p_ml_word, p_topic, p_text))
 
     def main_process(self, test_size):
-        mapping_lst = pickle.load(open('data/obj/data4000.obj', 'rb'))
+        mapping_lst = pickle.load(open('data/data/data4000.data', 'rb'))
         x = []
         y = []
         for mapping in mapping_lst:

@@ -7,4 +7,4 @@ if __name__ == '__main__':
         main_obj = MainCompare()
         result_data[str(i)] = main_obj.main_process(i)
 
-    pickle.dump(result_data, open('data/result/resize.obj', 'wb'))
+    pickle.dump(result_data, open('data/result/resize.data', 'wb'))

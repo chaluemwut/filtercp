@@ -60,6 +60,7 @@ def load_data():
             mapping.feature_list = feature_data
 
             feature_and_word_data = feature_data[:]
+
             feature_and_word_data.append(len(message))
             feature_and_word_data.append(message.count('?'))
             feature_and_word_data.append(message.count('!'))
@@ -73,14 +74,9 @@ def load_data():
             mapping.feature_and_word_list = feature_and_word_data
             data_obj.append(mapping)
 
-        pickle.dump(data_obj, open('data/obj/data4000.obj', 'wb'))
+        pickle.dump(data_obj, open('data/data/data4000.data', 'wb'))
         print('end load...')
 
 
 if __name__ == '__main__':
-    # load_data()
-    a = [1,2,3]
-    b = [3,4,5]
-    c = [2,3,4]
-    for aa,bb,cc in zip(a,b,c):
-        print(aa,bb,cc)
+    load_data()
