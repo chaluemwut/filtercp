@@ -93,7 +93,7 @@ def text_feature_process(x_train, x_test, y_train, y_test):
 def load_data():
     print('start...')
     nlp = CRFWordSegment()
-    with codecs.open('data/db/filterel4000.json', 'r', encoding='utf8') as f:
+    with codecs.open('data/db/filterel4000.json', 'r', 'utf-8') as f:
         lines = f.readlines()
         data_obj = []
         for data in lines:
