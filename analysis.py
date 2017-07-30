@@ -3,6 +3,12 @@ import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 
+'''
+https://www.researchgate.net/publication/267205556_Power_Comparisons_of_Shapiro-Wilk_Kolmogorov-Smirnov_Lilliefors_and_Anderson-Darling_Tests
+
+
+'''
+
 # def perf_boxplot():
 #     all_result = pickle.load(open('data/result/result400_v2.data', 'rb'))
 #     plt.boxplot([all_result['perf_text'], all_result['perf_ml'], all_result['perf_ml_word']])
@@ -36,7 +42,7 @@ def plot_graph1():
                  ml_result['f1_text_lst'], \
                  ml_result['f1_social_lst']
                     ])
-    fig = plt.figure(1, figsize=(1, 1))
+    fig = plt.figure(1, figsize=(3, 3))
     ax = fig.add_subplot(111)
     ax.set_xticklabels(['Topic', 'Text', 'Social'])
     plt.ylabel('F1-Score value')
@@ -45,14 +51,14 @@ def plot_graph1():
 def plot_graph2():
     ml_result = pickle.load(open('data/all_result/all_result_ml.obj', 'rb'))
     plt.boxplot([
-        ml_result['f1_topic_lst'], \
-        ml_result['f1_text_lst'], \
-        ml_result['f1_topic_and_text_lst'], \
-        ml_result['f1_social_lst']
+        ml_result['f1_social_lst'], \
+        ml_result['f1_topic_and_social_lst'], \
+        ml_result['f1_social_and_text_lst'], \
+        ml_result['f1_topic_text_social_lst']
         ])
     fig = plt.figure(1, figsize=(4, 4))
     ax = fig.add_subplot(111)
-    ax.set_xticklabels(['Topic', 'Text', 'Topic and Text', 'Social'])
+    ax.set_xticklabels(['Social', 'Social+Topic', 'Social+Text', 'Social+Text+Topic'])
     plt.ylabel('F1-Score value')
     plt.show()
 
@@ -80,8 +86,11 @@ def all_result_new():
                 ml_result['f1_social_and_text_lst'],\
                 ml_result['f1_topic_text_social_lst']
                 ])
+    # fig = plt.figure(1, figsize=(4, 4))
+    # ax = fig.add_subplot(111)
+    # ax.set_xticklabels(['Topic', 'Text', 'Topic and Text', 'Social'])
     plt.ylabel('F1-Score value')
     plt.show()
 
 if __name__ == '__main__':
-    all_result_new()
+    plot_graph2()

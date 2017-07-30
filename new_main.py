@@ -12,6 +12,7 @@ from utilfile import FileUtil
 from sklearn.metrics import f1_score
 import numpy as np
 from data_bean import NewDataMapping
+import time
 
 dict_list = set([x.replace('\n', '') for x in FileUtil.read_file('data/resource/dict.txt')])
 
@@ -334,45 +335,88 @@ def process(num_loop):
         x.append(mapping)
         y.append(mapping.prediction_result)
 
-    f1_text_lst = []
-    f1_topic_lst = []
-    f1_social_lst = []
-    f1_social_and_text_lst = []
-    f1_topic_and_text_lst = []
-    f1_topic_and_social_lst = []
-    f1_topic_text_social_lst = []
+    # f1_text_lst = []
+    # f1_topic_lst = []
+    # f1_social_lst = []
+    # f1_social_and_text_lst = []
+    # f1_topic_and_text_lst = []
+    # f1_topic_and_social_lst = []
+    # f1_topic_text_social_lst = []
+
+    text_time = []
+    topic_time = []
+    social_time = []
+    social_text_time = []
+    topic_text_time = []
+    topic_social_time = []
+    topic_text_social_time = []
+
     for i in range(0, num_loop):
         log.info('****** start loop {} '.format(i))
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=random.randrange(1000))
 
+        start_time = time.time()
         f1_text = text_feature_process(x_train, x_test, y_train, y_test)
+        total_text = time.time() - start_time
+        text_time.append(total_text)
+
+        start_time = time.time()
         f1_topic = topic_feature_process(x_train, x_test, y_train, y_test)
+        total_topic = time.time() - start_time
+        topic_time.append(total_topic)
+
+        start_time = time.time()
         f1_social = social_feature_process(x_train, x_test, y_train, y_test)
+        total_social = time.time() - start_time
+        social_time.append(total_social)
+
+        start_time = time.time()
         f1_social_and_text = social_and_text_feature_process(x_train, x_test, y_train, y_test)
+        total_social_text = time.time() - start_time
+        social_text_time.append(total_social_text)
 
+        start_time = time.time()
         f1_topic_text = topic_and_text(x_train, x_test, y_train, y_test)
+        total_topic_text = time.time() - start_time
+        topic_text_time.append(total_topic_text)
+
+        start_time = time.time()
         f1_topic_social = topic_and_social(x_train, x_test, y_train, y_test)
+        total_topic_social = time.time() - start_time
+        topic_social_time.append(total_topic_social)
 
+        start_time = time.time()
         f1_topic_text_social = topic_text_social(x_train, x_test, y_train, y_test)
+        total_topic_text_social = time.time() - start_time
+        topic_text_social_time.append(total_topic_text_social)
 
-        f1_text_lst.append(f1_text)
-        f1_topic_lst.append(f1_topic)
-        f1_social_lst.append(f1_social)
-        f1_social_and_text_lst.append(f1_social_and_text)
-        f1_topic_and_text_lst.append(f1_topic_text)
-        f1_topic_and_social_lst.append(f1_topic_social)
-        f1_topic_text_social_lst.append(f1_topic_text_social)
+        # f1_text_lst.append(f1_text)
+        # f1_topic_lst.append(f1_topic)
+        # f1_social_lst.append(f1_social)
+        # f1_social_and_text_lst.append(f1_social_and_text)
+        # f1_topic_and_text_lst.append(f1_topic_text)
+        # f1_topic_and_social_lst.append(f1_topic_social)
+        # f1_topic_text_social_lst.append(f1_topic_text_social)
+
+
+    # all_result['f1_text_lst'] = f1_text_lst
+    # all_result['f1_topic_lst'] = f1_topic_lst
+    # all_result['f1_social_lst'] = f1_social_lst
+    # all_result['f1_social_and_text_lst'] = f1_social_and_text_lst
+    # all_result['f1_topic_and_text_lst'] = f1_topic_and_text_lst
+    # all_result['f1_topic_and_social_lst'] = f1_topic_and_social_lst
+    # all_result['f1_topic_text_social_lst'] = f1_topic_text_social_lst
 
     all_result = {}
-    all_result['f1_text_lst'] = f1_text_lst
-    all_result['f1_topic_lst'] = f1_topic_lst
-    all_result['f1_social_lst'] = f1_social_lst
-    all_result['f1_social_and_text_lst'] = f1_social_and_text_lst
-    all_result['f1_topic_and_text_lst'] = f1_topic_and_text_lst
-    all_result['f1_topic_and_social_lst'] = f1_topic_and_social_lst
-    all_result['f1_topic_text_social_lst'] = f1_topic_text_social_lst
-    pickle.dump(all_result, open('data/all_result/all_result_ml.obj', 'wb'))
+    all_result['text_time'] = text_time
+    all_result['topic_time'] = topic_time
+    all_result['social_time'] = social_time
+    all_result['social_text_time'] = social_text_time
+    all_result['topic_text_time'] = topic_text_time
+    all_result['topic_social_time'] = topic_social_time
+    all_result['topic_text_social_time'] = topic_text_social_time
+    pickle.dump(all_result, open('data/time_result/all_result_ml.obj', 'wb'))
     log.info('end machine learning...')
 
-if __name__ == '__main__':
-    process(10)
+# if __name__ == '__main__':
+#     process(10)
